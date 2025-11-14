@@ -15,7 +15,7 @@ PImage redBird;
 FPoly platform1;
 FPoly platform2;
 FPoly platform3;
-
+FCircle circle;
 //fisica
 FWorld world;
 
@@ -26,7 +26,7 @@ void setup() {
 
   //initialise world
   makeWorld();
-
+  makeCircle();
   //add terrain to world
   makePlatform1();
   makePlatform2();
@@ -112,9 +112,9 @@ void draw() {
   println("x: " + mouseX + " y: " + mouseY);
   background(blue);
 
-  if (frameCount % 50 == 0) {  //Every 20 frames ...
-    makeCircle();
-  }
+
+  refreshCircle();
+
   world.step();  //get box2D to calculate all the forces and new positions
   world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
 }
@@ -123,19 +123,36 @@ void draw() {
 //===========================================================================================
 
 void makeCircle() {
-  FCircle circle = new FCircle(50);
-  circle.setPosition(random(100, width-100), -5);
+  circle = new FCircle(25);
+  circle.setPosition(200, 600);
 
   //set visuals
   circle.setStroke(0);
-  circle.setStrokeWeight(2);
+  circle.setStrokeWeight(1);
   circle.setFillColor(white);
 
   //set physical properties
   circle.setDensity(0.2);
   circle.setFriction(1);
-  circle.setRestitution(1);
+  circle.setRestitution(0.67);
+
 
   //add to world
   world.add(circle);
+}
+//===========================================================================================
+void makeBox(){
+  
+}
+void refreshCircle() {
+  if (circle.getX() >width || circle.getX() < 0) {
+    circle.setPosition(200, 600);
+    circle.setVelocity(0, 0);
+    circle.setAngularVelocity(0);
+  }
+  if (circle.getY() <0) {
+    circle.setPosition(200, 600);
+    circle.setVelocity(0, 0);
+    circle.setAngularVelocity(0);
+  }
 }
