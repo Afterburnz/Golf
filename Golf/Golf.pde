@@ -16,6 +16,9 @@ FPoly platform1;
 FPoly platform2;
 FPoly platform3;
 FCircle circle;
+FBox box;
+boolean wKey, aKey, dKey;
+
 //fisica
 FWorld world;
 
@@ -27,6 +30,7 @@ void setup() {
   //initialise world
   makeWorld();
   makeCircle();
+  makeBox();
   //add terrain to world
   makePlatform1();
   makePlatform2();
@@ -109,14 +113,33 @@ void makePlatform3() {
 
 
 void draw() {
-  println("x: " + mouseX + " y: " + mouseY);
   background(blue);
 
 
   refreshCircle();
+  refreshBox();
+
 
   world.step();  //get box2D to calculate all the forces and new positions
   world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
+
+  if (wKey) {
+    box.setVelocity(0, -200);
+  }
+  if (dKey) {
+    box.setVelocity(200, 0);
+    box.adjustRotation(0.05);
+  }
+  if (aKey) {
+    box.setVelocity(-200, 0);
+    box.adjustRotation(-0.05);
+  }
+  if (wKey && dKey) {
+    box.setVelocity(282.8, -282.8);
+  }
+  if (wKey && aKey) {
+    box.setVelocity(-282.8, -282.8);
+  }
 }
 
 
@@ -141,9 +164,24 @@ void makeCircle() {
   world.add(circle);
 }
 //===========================================================================================
-void makeBox(){
-  
+
+void makeBox() {
+  box = new FBox(125, 125);
+  box.setPosition(1450, 300);
+
+  //set visuals
+  box.setStroke(0);
+  box.setStrokeWeight(1);
+  box.setFillColor(green);
+
+  //set physical properties
+  box.setDensity(2);
+  box.setFriction(0.5);
+  box.setRestitution(0.67);
+  box.setGrabbable(false);
+  world.add(box);
 }
+
 void refreshCircle() {
   if (circle.getX() >width || circle.getX() < 0) {
     circle.setPosition(200, 600);
@@ -154,5 +192,19 @@ void refreshCircle() {
     circle.setPosition(200, 600);
     circle.setVelocity(0, 0);
     circle.setAngularVelocity(0);
+  }
+}
+void refreshBox() {
+  if (box.getX() >width+100 || box.getX() < 0-100) {
+    box.setPosition(1450, 300);
+    box.setVelocity(0, 0);
+    box.setAngularVelocity(0);
+    box.setRotation(0);
+  }
+  if (box.getY() <0-100) {
+    box.setPosition(1450, 300);
+    box.setVelocity(0, 0);
+    box.setAngularVelocity(0);
+    box.setRotation(0);
   }
 }
