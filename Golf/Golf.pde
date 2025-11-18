@@ -127,12 +127,17 @@ void draw() {
     box.setVelocity(0, -200);
   }
   if (dKey) {
-    box.setVelocity(200, 0);
-    box.adjustRotation(0.05);
+    box.setVelocity(200, box.getVelocityY());
+
+    if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)) {
+      box.setAngularVelocity(0);
+    }
   }
   if (aKey) {
-    box.setVelocity(-200, 0);
-    box.adjustRotation(-0.05);
+    box.setVelocity(-200, box.getVelocityY());
+  }
+  if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)) {
+    box.setAngularVelocity(0);
   }
   if (wKey && dKey) {
     box.setVelocity(282.8, -282.8);
