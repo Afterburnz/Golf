@@ -15,7 +15,11 @@ PImage redBird;
 FPoly platform1;
 FPoly platform2;
 FPoly platform3;
+FPoly platform4;
+FPoly platform5;
+FPoly platform6;
 FCircle circle;
+FCircle sand;
 FBox box;
 boolean wKey, aKey, dKey;
 
@@ -24,17 +28,26 @@ FWorld world;
 
 void setup() {
   //make window
-  size(1600, 900);
+  size(2000, 900,P2D);
 
 
   //initialise world
   makeWorld();
   makeCircle();
   makeBox();
+
+  int i =0;
+  while (i<400) {
+    makeSand();
+    i++;
+  }
   //add terrain to world
   makePlatform1();
   makePlatform2();
   makePlatform3();
+  makePlatform4();
+  makePlatform5();
+  makePlatform6();
 }
 
 //===========================================================================================
@@ -52,14 +65,14 @@ void makePlatform1() {
 
   //plot the vertices of this platform
   platform1.vertex(0, 800);
-  platform1.vertex(500, 800);
-  platform1.vertex(500, 700);
+  platform1.vertex(200, 800);
+  platform1.vertex(200, 700);
   platform1.vertex(0, 700);
 
   // define properties
   platform1.setStatic(true);
   platform1.setFillColor(green);
-  platform1.setFriction(0.1);
+  platform1.setFriction(0);
   platform1.setGrabbable(false);
   //put it in the world
   world.add(platform1);
@@ -71,10 +84,10 @@ void makePlatform2() {
   platform2 = new FPoly();
 
   //plot the vertices of this platform
-  platform2.vertex(500, 800);
-  platform2.vertex(500, 700);
-  platform2.vertex(1300, 500);
-  platform2.vertex(1300, 600);
+  platform2.vertex(200, 800);
+  platform2.vertex(200, 700);
+  platform2.vertex(600, 500);
+  platform2.vertex(600, 600);
 
   // define properties
   platform2.setStatic(true);
@@ -92,10 +105,10 @@ void makePlatform3() {
   platform3 = new FPoly();
 
   //plot the vertices of this platform
-  platform3.vertex(1300, 500);
-  platform3.vertex(1300, 600);
-  platform3.vertex(1600, 600);
-  platform3.vertex(1600, 500);
+  platform3.vertex(600, 500);
+  platform3.vertex(600, 600);
+  platform3.vertex(900, 300);
+  platform3.vertex(900, 200);
 
 
   // define properties
@@ -110,7 +123,72 @@ void makePlatform3() {
 
 
 //===========================================================================================
+void makePlatform4() {
+  platform4 = new FPoly();
 
+  //plot the vertices of this platform
+  platform4.vertex(900, 300);
+  platform4.vertex(900, 275);
+  platform4.vertex(1200, 275);
+  platform4.vertex(1200, 300);
+
+
+  // define properties
+  platform4.setStatic(true);
+  platform4.setFillColor(green);
+  platform4.setFriction(0);
+  platform4.setGrabbable(false);
+
+  //put it in the world
+  world.add(platform4);
+}
+
+
+//===========================================================================================
+void makePlatform5() {
+  platform5 = new FPoly();
+
+  //plot the vertices of this platform
+  platform5.vertex(1200, 300);
+  platform5.vertex(1200, 200);
+  platform5.vertex(1400, 700);
+  platform5.vertex(1400, 800);
+
+
+  // define properties
+  platform5.setStatic(true);
+  platform5.setFillColor(green);
+  platform5.setFriction(0);
+  platform5.setGrabbable(false);
+
+  //put it in the world
+  world.add(platform5);
+}
+
+
+//===========================================================================================
+void makePlatform6() {
+  platform6 = new FPoly();
+
+  //plot the vertices of this platform
+  platform6.vertex(1400, 700);
+  platform6.vertex(1400, 800);
+  platform6.vertex(1700, 800);
+  platform6.vertex(1700, 700);
+
+
+  // define properties
+  platform6.setStatic(true);
+  platform6.setFillColor(green);
+  platform6.setFriction(0);
+  platform6.setGrabbable(false);
+
+  //put it in the world
+  world.add(platform6);
+}
+
+
+//===========================================================================================
 
 void draw() {
   background(blue);
@@ -118,6 +196,7 @@ void draw() {
 
   refreshCircle();
   refreshBox();
+  refreshSand();
 
 
   world.step();  //get box2D to calculate all the forces and new positions
@@ -138,6 +217,7 @@ void draw() {
   }
   if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)) {
     box.setAngularVelocity(0);
+    box.setFriction(100);
   }
   if (wKey && dKey) {
     box.setVelocity(282.8, -282.8);
@@ -152,7 +232,7 @@ void draw() {
 
 void makeCircle() {
   circle = new FCircle(25);
-  circle.setPosition(200, 600);
+  circle.setPosition(100, 600);
 
   //set visuals
   circle.setStroke(0);
@@ -163,16 +243,37 @@ void makeCircle() {
   circle.setDensity(0.2);
   circle.setFriction(1);
   circle.setRestitution(0.67);
+  circle.setGrabbable(false);
 
 
   //add to world
   world.add(circle);
 }
 //===========================================================================================
+void makeSand() {
+  sand = new FCircle(5);
+  sand.setPosition(random(910, 1190), 250);
+
+  //set visuals
+  sand.setStroke(0);
+  sand.setStrokeWeight(1);
+  sand.setFillColor(yellow);
+
+  //set physical properties
+  sand.setDensity(0.2);
+  sand.setFriction(1);
+  sand.setRestitution(0.67);
+  sand.setGrabbable(false);
+
+
+  //add to world
+  world.add(sand);
+}
+//===========================================================================================
 
 void makeBox() {
   box = new FBox(125, 125);
-  box.setPosition(1450, 300);
+  box.setPosition(1550, 500);
 
   //set visuals
   box.setStroke(0);
@@ -181,8 +282,8 @@ void makeBox() {
 
   //set physical properties
   box.setDensity(2);
-  box.setFriction(0.5);
-  box.setRestitution(0.67);
+  box.setFriction(0);
+  box.setRestitution(0.41);
   box.setGrabbable(false);
   world.add(box);
 }
@@ -199,17 +300,28 @@ void refreshCircle() {
     circle.setAngularVelocity(0);
   }
 }
+void refreshSand() {
+  if (sand.getY() >300) {
+    circle.setPosition(random(910, 1190), 250);
+    circle.setVelocity(0, 0);
+    circle.setAngularVelocity(0);
+  }
+}
 void refreshBox() {
   if (box.getX() >width+100 || box.getX() < 0-100) {
-    box.setPosition(1450, 300);
+    box.setPosition(1550, 300);
     box.setVelocity(0, 0);
     box.setAngularVelocity(0);
     box.setRotation(0);
   }
   if (box.getY() <0-100) {
-    box.setPosition(1450, 300);
+    box.setPosition(1550, 300);
     box.setVelocity(0, 0);
     box.setAngularVelocity(0);
     box.setRotation(0);
   }
+}
+
+void mouseReleased() {
+  circle.addForce(25*(mouseX-circle.getX()), 25*(mouseY-circle.getY()));
 }
