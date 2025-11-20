@@ -18,6 +18,8 @@ FPoly platform3;
 FPoly platform4;
 FPoly platform5;
 FPoly platform6;
+FPoly platform7;
+FPoly platform8;
 FCircle circle;
 FCircle sand;
 FBox box;
@@ -28,7 +30,7 @@ FWorld world;
 
 void setup() {
   //make window
-  size(2000, 900,P2D);
+  size(2000, 900, P2D);
 
 
   //initialise world
@@ -48,6 +50,8 @@ void setup() {
   makePlatform4();
   makePlatform5();
   makePlatform6();
+  makePlatform7();
+  //makePlatform8();
 }
 
 //===========================================================================================
@@ -189,6 +193,28 @@ void makePlatform6() {
 
 
 //===========================================================================================
+void makePlatform7() {
+  platform7 = new FPoly();
+
+  //plot the vertices of this platform
+  platform7.vertex(1275, 160);
+  platform7.vertex(1275, 0);
+  platform7.vertex(1250, 0);
+  platform7.vertex(1250, 160);
+
+
+  // define properties
+  platform7.setStatic(true);
+  platform7.setFillColor(black);
+  platform7.setFriction(0);
+  platform7.setGrabbable(false);
+
+  //put it in the world
+  world.add(platform7);
+}
+
+
+//===========================================================================================
 
 void draw() {
   background(blue);
@@ -278,7 +304,7 @@ void makeBox() {
   //set visuals
   box.setStroke(0);
   box.setStrokeWeight(1);
-  box.setFillColor(green);
+  box.setFillColor(red);
 
   //set physical properties
   box.setDensity(2);
@@ -290,21 +316,21 @@ void makeBox() {
 
 void refreshCircle() {
   if (circle.getX() >width || circle.getX() < 0) {
-    circle.setPosition(200, 600);
+    circle.setPosition(100, 600);
     circle.setVelocity(0, 0);
     circle.setAngularVelocity(0);
   }
   if (circle.getY() <0) {
-    circle.setPosition(200, 600);
+    circle.setPosition(100, 600);
     circle.setVelocity(0, 0);
     circle.setAngularVelocity(0);
   }
 }
 void refreshSand() {
   if (sand.getY() >300) {
-    circle.setPosition(random(910, 1190), 250);
-    circle.setVelocity(0, 0);
-    circle.setAngularVelocity(0);
+    sand.setPosition(random(910, 1190), 250);
+    sand.setVelocity(0, 0);
+    sand.setAngularVelocity(0);
   }
 }
 void refreshBox() {
