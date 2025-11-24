@@ -8,6 +8,7 @@ color brown  = color(166, 120, 24);
 color green  = color(74, 163, 57);
 color red    = color(224, 80, 61);
 color yellow = color(242, 215, 16);
+color dBlue = #2E02F5;
 
 //assets
 PImage redBird;
@@ -20,6 +21,9 @@ FPoly platform5;
 FPoly platform6;
 FPoly platform7;
 FPoly platform8;
+FPoly platform9;
+FPoly platform10;
+FPoly platform11;
 FCircle circle;
 FCircle sand;
 FBox box;
@@ -51,7 +55,10 @@ void setup() {
   makePlatform5();
   makePlatform6();
   makePlatform7();
-  //makePlatform8();
+  makePlatform8();
+  makePlatform9();
+  makePlatform10();
+  makePlatform11();
 }
 
 //===========================================================================================
@@ -132,8 +139,8 @@ void makePlatform4() {
 
   //plot the vertices of this platform
   platform4.vertex(900, 300);
-  platform4.vertex(900, 275);
-  platform4.vertex(1200, 275);
+  platform4.vertex(900, 285);
+  platform4.vertex(1200, 285);
   platform4.vertex(1200, 300);
 
 
@@ -175,10 +182,10 @@ void makePlatform6() {
   platform6 = new FPoly();
 
   //plot the vertices of this platform
-  platform6.vertex(1400, 700);
+  platform6.vertex(1400, 750);
   platform6.vertex(1400, 800);
-  platform6.vertex(1700, 800);
-  platform6.vertex(1700, 700);
+  platform6.vertex(1600, 800);
+  platform6.vertex(1600, 750);
 
 
   // define properties
@@ -197,10 +204,10 @@ void makePlatform7() {
   platform7 = new FPoly();
 
   //plot the vertices of this platform
-  platform7.vertex(1275, 160);
+  platform7.vertex(1275, 110);
   platform7.vertex(1275, 0);
   platform7.vertex(1250, 0);
-  platform7.vertex(1250, 160);
+  platform7.vertex(1250, 110);
 
 
   // define properties
@@ -211,6 +218,122 @@ void makePlatform7() {
 
   //put it in the world
   world.add(platform7);
+}
+
+
+//===========================================================================================
+void makePlatform8() {
+  platform8 = new FPoly();
+
+  //plot the vertices of this platform
+  platform8.vertex(1600, 700);
+  platform8.vertex(1712, 700);
+  platform8.vertex(1712, 775);
+  platform8.vertex(1812, 775);
+  platform8.vertex(1812, 700);
+  platform8.vertex(2000, 700);
+  platform8.vertex(2000, 800);
+  platform8.vertex(1600, 800);
+
+
+
+
+
+
+  // define properties
+  platform8.setStatic(true);
+  platform8.setFillColor(green);
+  platform8.setFriction(0);
+  platform8.setGrabbable(false);
+
+  //put it in the world
+  world.add(platform8);
+}
+
+
+//===========================================================================================
+void makePlatform9() {
+  platform9 = new FPoly();
+
+  //plot the vertices of this platform
+  platform9.vertex(1400, 725);
+  platform9.vertex(1400, 750);
+  platform9.vertex(1600, 750);
+  platform9.vertex(1600, 725);
+
+
+  // define properties
+  platform9.setStatic(true);
+  platform9.setFillColor(dBlue);
+  platform9.setFriction(0);
+  platform9.setGrabbable(false);
+
+  //put it in the world
+  world.add(platform9);
+}
+
+
+//===========================================================================================
+void makePlatform10() {
+  platform10 = new FPoly();
+
+  //plot the vertices of this platform
+
+  platform10.vertex(1712, 700);
+  platform10.vertex(1727, 700);
+  platform10.vertex(1727, 760);
+  platform10.vertex(1797, 760);
+  platform10.vertex(1797, 700);
+  platform10.vertex(1812, 700);
+  platform10.vertex(1812, 775);
+  platform10.vertex(1712,775);
+
+
+
+
+
+
+
+
+  // define properties
+  platform10.setStatic(true);
+  platform10.setFillColor(white);
+  platform10.setFriction(0);
+  platform10.setGrabbable(false);
+
+  //put it in the world
+  world.add(platform10);
+}
+
+
+//===========================================================================================
+void makePlatform11() {
+  platform11 = new FPoly();
+
+  //plot the vertices of this platform
+
+
+  platform11.vertex(1727, 750);
+  platform11.vertex(1727, 760);
+  platform11.vertex(1797, 760);
+  platform11.vertex(1797, 750);
+
+
+
+
+
+
+
+
+
+  // define properties
+  platform11.setStatic(true);
+  platform11.setFillColor(yellow);
+  platform11.setFriction(0);
+  platform11.setGrabbable(false);
+
+  //put it in the world
+  world.add(platform11);
 }
 
 
@@ -227,21 +350,26 @@ void draw() {
 
   world.step();  //get box2D to calculate all the forces and new positions
   world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
-
+  if (circle.isTouchingBody(platform9)) {
+    circle.setPosition(100, 600);
+    circle.setVelocity(0, 0);
+    circle.setAngularVelocity(0);
+  }
   if (wKey) {
     box.setVelocity(0, -200);
   }
   if (dKey) {
     box.setVelocity(200, box.getVelocityY());
 
-    if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)) {
+    if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)|| box.isTouchingBody(platform4)|| box.isTouchingBody(platform5)|| box.isTouchingBody(platform6)|| box.isTouchingBody(platform7)|| box.isTouchingBody(platform8)) {
       box.setAngularVelocity(0);
+      box.setFriction(100);
     }
   }
   if (aKey) {
     box.setVelocity(-200, box.getVelocityY());
   }
-  if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)) {
+  if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)|| box.isTouchingBody(platform4)|| box.isTouchingBody(platform5)|| box.isTouchingBody(platform6)|| box.isTouchingBody(platform7)|| box.isTouchingBody(platform8)) {
     box.setAngularVelocity(0);
     box.setFriction(100);
   }
@@ -263,7 +391,7 @@ void makeCircle() {
   //set visuals
   circle.setStroke(0);
   circle.setStrokeWeight(1);
-  circle.setFillColor(white);
+  circle.setFillColor(dBlue);
 
   //set physical properties
   circle.setDensity(0.2);
@@ -298,8 +426,8 @@ void makeSand() {
 //===========================================================================================
 
 void makeBox() {
-  box = new FBox(125, 125);
-  box.setPosition(1550, 500);
+  box = new FBox(25, 25);
+  box.setPosition(1750, 500);
 
   //set visuals
   box.setStroke(0);
@@ -307,8 +435,8 @@ void makeBox() {
   box.setFillColor(red);
 
   //set physical properties
-  box.setDensity(2);
-  box.setFriction(0);
+  box.setDensity(1);
+  box.setFriction(100);
   box.setRestitution(0.41);
   box.setGrabbable(false);
   world.add(box);
@@ -335,13 +463,13 @@ void refreshSand() {
 }
 void refreshBox() {
   if (box.getX() >width+100 || box.getX() < 0-100) {
-    box.setPosition(1550, 300);
+    box.setPosition(1750, 300);
     box.setVelocity(0, 0);
     box.setAngularVelocity(0);
     box.setRotation(0);
   }
   if (box.getY() <0-100) {
-    box.setPosition(1550, 300);
+    box.setPosition(1750, 300);
     box.setVelocity(0, 0);
     box.setAngularVelocity(0);
     box.setRotation(0);
