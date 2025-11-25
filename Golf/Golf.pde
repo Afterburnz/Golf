@@ -10,6 +10,12 @@ color red    = color(224, 80, 61);
 color yellow = color(242, 215, 16);
 color dBlue = #2E02F5;
 
+final int INTRO = 0;
+final int GAME = 1;
+int mode = 0;
+int strokes = 0;
+int bestScore = 0;
+
 //assets
 PImage redBird;
 
@@ -24,10 +30,10 @@ FPoly platform8;
 FPoly platform9;
 FPoly platform10;
 FPoly platform11;
-FCircle circle;
+FCircle player1;
 FCircle sand;
-FBox box;
-boolean wKey, aKey, dKey;
+FBox player2;
+boolean wKey, aKey, dKey, spaceKey;
 
 //fisica
 FWorld world;
@@ -286,7 +292,7 @@ void makePlatform10() {
   platform10.vertex(1797, 700);
   platform10.vertex(1812, 700);
   platform10.vertex(1812, 775);
-  platform10.vertex(1712,775);
+  platform10.vertex(1712, 775);
 
 
 
@@ -341,43 +347,49 @@ void makePlatform11() {
 
 void draw() {
   background(blue);
+  if (mode==INTRO) {
+    intro();
+  } else {
 
+    refreshCircle();
+    refreshBox();
+    refreshSand();
+    finish();
 
-  refreshCircle();
-  refreshBox();
-  refreshSand();
-
-
-  world.step();  //get box2D to calculate all the forces and new positions
-  world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
-  if (circle.isTouchingBody(platform9)) {
-    circle.setPosition(100, 600);
-    circle.setVelocity(0, 0);
-    circle.setAngularVelocity(0);
-  }
-  if (wKey) {
-    box.setVelocity(0, -200);
-  }
-  if (dKey) {
-    box.setVelocity(200, box.getVelocityY());
-
-    if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)|| box.isTouchingBody(platform4)|| box.isTouchingBody(platform5)|| box.isTouchingBody(platform6)|| box.isTouchingBody(platform7)|| box.isTouchingBody(platform8)) {
-      box.setAngularVelocity(0);
-      box.setFriction(100);
+    world.step();  //get box2D to calculate all the forces and new positions
+    world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
+    if (player1.isTouchingBody(platform9)) {
+      player1.setPosition(100, 600);
+      player1.setVelocity(0, 0);
+      player1.setAngularVelocity(0);
     }
-  }
-  if (aKey) {
-    box.setVelocity(-200, box.getVelocityY());
-  }
-  if (box.isTouchingBody(platform1) || box.isTouchingBody(platform2) || box.isTouchingBody(platform3)|| box.isTouchingBody(platform4)|| box.isTouchingBody(platform5)|| box.isTouchingBody(platform6)|| box.isTouchingBody(platform7)|| box.isTouchingBody(platform8)) {
-    box.setAngularVelocity(0);
-    box.setFriction(100);
-  }
-  if (wKey && dKey) {
-    box.setVelocity(282.8, -282.8);
-  }
-  if (wKey && aKey) {
-    box.setVelocity(-282.8, -282.8);
+    if (wKey) {
+      player2.setVelocity(0, -200);
+    }
+    if (dKey) {
+      player2.setVelocity(200, player2.getVelocityY());
+
+      if (player2.isTouchingBody(platform1) || player2.isTouchingBody(platform2) || player2.isTouchingBody(platform3)|| player2.isTouchingBody(platform4)|| player2.isTouchingBody(platform5)|| player2.isTouchingBody(platform6)|| player2.isTouchingBody(platform7)|| player2.isTouchingBody(platform8)) {
+        player2.setAngularVelocity(0);
+        player2.setFriction(100);
+      }
+    }
+    if (aKey) {
+      player2.setVelocity(-200, player2.getVelocityY());
+    }
+    if (player2.isTouchingBody(platform1) || player2.isTouchingBody(platform2) || player2.isTouchingBody(platform3)|| player2.isTouchingBody(platform4)|| player2.isTouchingBody(platform5)|| player2.isTouchingBody(platform6)|| player2.isTouchingBody(platform7)|| player2.isTouchingBody(platform8)) {
+      player2.setAngularVelocity(0);
+      player2.setFriction(100);
+    }
+    if (wKey && dKey) {
+      player2.setVelocity(282.8, -282.8);
+    }
+    if (wKey && aKey) {
+      player2.setVelocity(-282.8, -282.8);
+    }
+    textSize(50);
+    text("Strokes: " + strokes, 10, 50);
+    text("Least strokes: " + bestScore, 10, 110);
   }
 }
 
@@ -385,23 +397,23 @@ void draw() {
 //===========================================================================================
 
 void makeCircle() {
-  circle = new FCircle(25);
-  circle.setPosition(100, 600);
+  player1 = new FCircle(25);
+  player1.setPosition(100, 600);
 
   //set visuals
-  circle.setStroke(0);
-  circle.setStrokeWeight(1);
-  circle.setFillColor(dBlue);
+  player1.setStroke(0);
+  player1.setStrokeWeight(1);
+  player1.setFillColor(dBlue);
 
   //set physical properties
-  circle.setDensity(0.2);
-  circle.setFriction(1);
-  circle.setRestitution(0.67);
-  circle.setGrabbable(false);
+  player1.setDensity(0.2);
+  player1.setFriction(1);
+  player1.setRestitution(0.67);
+  player1.setGrabbable(false);
 
 
   //add to world
-  world.add(circle);
+  world.add(player1);
 }
 //===========================================================================================
 void makeSand() {
@@ -426,32 +438,32 @@ void makeSand() {
 //===========================================================================================
 
 void makeBox() {
-  box = new FBox(25, 25);
-  box.setPosition(1750, 500);
+  player2 = new FBox(25, 25);
+  player2.setPosition(1750, 500);
 
   //set visuals
-  box.setStroke(0);
-  box.setStrokeWeight(1);
-  box.setFillColor(red);
+  player2.setStroke(0);
+  player2.setStrokeWeight(1);
+  player2.setFillColor(red);
 
   //set physical properties
-  box.setDensity(1);
-  box.setFriction(100);
-  box.setRestitution(0.41);
-  box.setGrabbable(false);
-  world.add(box);
+  player2.setDensity(1);
+  player2.setFriction(100);
+  player2.setRestitution(0.41);
+  player2.setGrabbable(false);
+  world.add(player2);
 }
 
 void refreshCircle() {
-  if (circle.getX() >width || circle.getX() < 0) {
-    circle.setPosition(100, 600);
-    circle.setVelocity(0, 0);
-    circle.setAngularVelocity(0);
+  if (player1.getX() >width || player1.getX() < 0) {
+    player1.setPosition(100, 600);
+    player1.setVelocity(0, 0);
+    player1.setAngularVelocity(0);
   }
-  if (circle.getY() <0) {
-    circle.setPosition(100, 600);
-    circle.setVelocity(0, 0);
-    circle.setAngularVelocity(0);
+  if (player1.getY() <0) {
+    player1.setPosition(100, 600);
+    player1.setVelocity(0, 0);
+    player1.setAngularVelocity(0);
   }
 }
 void refreshSand() {
@@ -462,20 +474,35 @@ void refreshSand() {
   }
 }
 void refreshBox() {
-  if (box.getX() >width+100 || box.getX() < 0-100) {
-    box.setPosition(1750, 300);
-    box.setVelocity(0, 0);
-    box.setAngularVelocity(0);
-    box.setRotation(0);
+  if (player2.getX() >width+100 || player2.getX() < 0-100) {
+    player2.setPosition(1750, 300);
+    player2.setVelocity(0, 0);
+    player2.setAngularVelocity(0);
+    player2.setRotation(0);
   }
-  if (box.getY() <0-100) {
-    box.setPosition(1750, 300);
-    box.setVelocity(0, 0);
-    box.setAngularVelocity(0);
-    box.setRotation(0);
+  if (player2.getY() <0-100) {
+    player2.setPosition(1750, 300);
+    player2.setVelocity(0, 0);
+    player2.setAngularVelocity(0);
+    player2.setRotation(0);
+  }
+}
+
+void finish() {
+  if (player1.isTouchingBody(platform11)) {
+    player1.setPosition(100, 600);
+    player1.setVelocity(0, 0);
+    player1.setAngularVelocity(0);
+    if (bestScore == 0) {
+      bestScore = strokes;
+    } else if (bestScore != 0 && strokes < bestScore) {
+      bestScore = strokes;
+    }
+    strokes = 0;
   }
 }
 
 void mouseReleased() {
-  circle.addForce(25*(mouseX-circle.getX()), 25*(mouseY-circle.getY()));
+  player1.addForce(25*(mouseX-player1.getX()), 25*(mouseY-player1.getY()));
+  strokes ++;
 }
