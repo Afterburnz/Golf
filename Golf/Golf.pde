@@ -30,9 +30,11 @@ FPoly platform8;
 FPoly platform9;
 FPoly platform10;
 FPoly platform11;
-FCircle player1;
+FCircle player1Ball;
+FBox player2Box;
+FCircle player1Box;
+FBox player2Ball;
 FCircle sand;
-FBox player2;
 boolean wKey, aKey, dKey, spaceKey;
 
 //fisica
@@ -89,7 +91,7 @@ void makePlatform1() {
   // define properties
   platform1.setStatic(true);
   platform1.setFillColor(green);
-  platform1.setFriction(0);
+  platform1.setFriction(0.001);
   platform1.setGrabbable(false);
   //put it in the world
   world.add(platform1);
@@ -109,7 +111,7 @@ void makePlatform2() {
   // define properties
   platform2.setStatic(true);
   platform2.setFillColor(green);
-  platform2.setFriction(0);
+  platform2.setFriction(0.001);
   platform2.setGrabbable(false);
 
   //put it in the world
@@ -131,7 +133,7 @@ void makePlatform3() {
   // define properties
   platform3.setStatic(true);
   platform3.setFillColor(green);
-  platform3.setFriction(0);
+  platform3.setFriction(0.001);
   platform3.setGrabbable(false);
 
   //put it in the world
@@ -153,7 +155,7 @@ void makePlatform4() {
   // define properties
   platform4.setStatic(true);
   platform4.setFillColor(green);
-  platform4.setFriction(0);
+  platform4.setFriction(0.001);
   platform4.setGrabbable(false);
 
   //put it in the world
@@ -175,7 +177,7 @@ void makePlatform5() {
   // define properties
   platform5.setStatic(true);
   platform5.setFillColor(green);
-  platform5.setFriction(0);
+  platform5.setFriction(0.001);
   platform5.setGrabbable(false);
 
   //put it in the world
@@ -197,7 +199,7 @@ void makePlatform6() {
   // define properties
   platform6.setStatic(true);
   platform6.setFillColor(green);
-  platform6.setFriction(0);
+  platform6.setFriction(0.001);
   platform6.setGrabbable(false);
 
   //put it in the world
@@ -219,7 +221,7 @@ void makePlatform7() {
   // define properties
   platform7.setStatic(true);
   platform7.setFillColor(black);
-  platform7.setFriction(0);
+  platform7.setFriction(0.001);
   platform7.setGrabbable(false);
 
   //put it in the world
@@ -249,7 +251,7 @@ void makePlatform8() {
   // define properties
   platform8.setStatic(true);
   platform8.setFillColor(green);
-  platform8.setFriction(0);
+  platform8.setFriction(0.001);
   platform8.setGrabbable(false);
 
   //put it in the world
@@ -271,7 +273,7 @@ void makePlatform9() {
   // define properties
   platform9.setStatic(true);
   platform9.setFillColor(dBlue);
-  platform9.setFriction(0);
+  platform9.setFriction(0.001);
   platform9.setGrabbable(false);
 
   //put it in the world
@@ -304,7 +306,7 @@ void makePlatform10() {
   // define properties
   platform10.setStatic(true);
   platform10.setFillColor(white);
-  platform10.setFriction(0);
+  platform10.setFriction(0.001);
   platform10.setGrabbable(false);
 
   //put it in the world
@@ -335,7 +337,7 @@ void makePlatform11() {
   // define properties
   platform11.setStatic(true);
   platform11.setFillColor(yellow);
-  platform11.setFriction(0);
+  platform11.setFriction(0.001);
   platform11.setGrabbable(false);
 
   //put it in the world
@@ -358,36 +360,37 @@ void draw() {
 
     world.step();  //get box2D to calculate all the forces and new positions
     world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
-    if (player1.isTouchingBody(platform9)) {
-      player1.setPosition(100, 600);
-      player1.setVelocity(0, 0);
-      player1.setAngularVelocity(0);
+    if (player1Ball.isTouchingBody(platform9)) {
+      player1Ball.setPosition(100, 600);
+      player1Ball.setVelocity(0, 0);
+      player1Ball.setAngularVelocity(0);
     }
     if (wKey) {
-      player2.setVelocity(0, -200);
+      player2Box.setVelocity(0, -200);
     }
     if (dKey) {
-      player2.setVelocity(200, player2.getVelocityY());
+      player2Box.setVelocity(200, player2Box.getVelocityY());
 
-      if (player2.isTouchingBody(platform1) || player2.isTouchingBody(platform2) || player2.isTouchingBody(platform3)|| player2.isTouchingBody(platform4)|| player2.isTouchingBody(platform5)|| player2.isTouchingBody(platform6)|| player2.isTouchingBody(platform7)|| player2.isTouchingBody(platform8)) {
-        player2.setAngularVelocity(0);
-        player2.setFriction(100);
+      if (player2Box.isTouchingBody(platform1) || player2Box.isTouchingBody(platform2) || player2Box.isTouchingBody(platform3)|| player2Box.isTouchingBody(platform4)|| player2Box.isTouchingBody(platform5)|| player2Box.isTouchingBody(platform6)|| player2Box.isTouchingBody(platform7)|| player2Box.isTouchingBody(platform8)) {
+        player2Box.setAngularVelocity(0);
+        player2Box.setFriction(100);
       }
     }
     if (aKey) {
-      player2.setVelocity(-200, player2.getVelocityY());
+      player2Box.setVelocity(-200, player2Box.getVelocityY());
     }
-    if (player2.isTouchingBody(platform1) || player2.isTouchingBody(platform2) || player2.isTouchingBody(platform3)|| player2.isTouchingBody(platform4)|| player2.isTouchingBody(platform5)|| player2.isTouchingBody(platform6)|| player2.isTouchingBody(platform7)|| player2.isTouchingBody(platform8)) {
-      player2.setAngularVelocity(0);
-      player2.setFriction(100);
+    if (player2Box.isTouchingBody(platform1) || player2Box.isTouchingBody(platform2) || player2Box.isTouchingBody(platform3)|| player2Box.isTouchingBody(platform4)|| player2Box.isTouchingBody(platform5)|| player2Box.isTouchingBody(platform6)|| player2Box.isTouchingBody(platform7)|| player2Box.isTouchingBody(platform8)) {
+      player2Box.setAngularVelocity(0);
+      player2Box.setFriction(100);
     }
     if (wKey && dKey) {
-      player2.setVelocity(282.8, -282.8);
+      player2Box.setVelocity(282.8, -282.8);
     }
     if (wKey && aKey) {
-      player2.setVelocity(-282.8, -282.8);
+      player2Box.setVelocity(-282.8, -282.8);
     }
     textSize(50);
+      textAlign(LEFT);
     text("Strokes: " + strokes, 10, 50);
     text("Least strokes: " + bestScore, 10, 110);
   }
@@ -397,23 +400,23 @@ void draw() {
 //===========================================================================================
 
 void makeCircle() {
-  player1 = new FCircle(25);
-  player1.setPosition(100, 600);
+  player1Ball = new FCircle(25);
+  player1Ball.setPosition(100, 600);
 
   //set visuals
-  player1.setStroke(0);
-  player1.setStrokeWeight(1);
-  player1.setFillColor(dBlue);
+  player1Ball.setStroke(0);
+  player1Ball.setStrokeWeight(1);
+  player1Ball.setFillColor(dBlue);
 
   //set physical properties
-  player1.setDensity(0.2);
-  player1.setFriction(1);
-  player1.setRestitution(0.67);
-  player1.setGrabbable(false);
+  player1Ball.setDensity(0.2);
+  player1Ball.setFriction(0);
+  player1Ball.setRestitution(0.67);
+  player1Ball.setGrabbable(false);
 
 
   //add to world
-  world.add(player1);
+  world.add(player1Ball);
 }
 //===========================================================================================
 void makeSand() {
@@ -438,32 +441,33 @@ void makeSand() {
 //===========================================================================================
 
 void makeBox() {
-  player2 = new FBox(25, 25);
-  player2.setPosition(1750, 500);
+  player2Box = new FBox(25, 25);
+  player2Box.setPosition(1750, 500);
 
   //set visuals
-  player2.setStroke(0);
-  player2.setStrokeWeight(1);
-  player2.setFillColor(red);
+  player2Box.setStroke(0);
+  player2Box.setStrokeWeight(1);
+  player2Box.setFillColor(red);
 
   //set physical properties
-  player2.setDensity(1);
-  player2.setFriction(100);
-  player2.setRestitution(0.41);
-  player2.setGrabbable(false);
-  world.add(player2);
+  player2Box.setDensity(1);
+  player2Box.setFriction(100);
+  player2Box.setRestitution(0.41);
+  player2Box.setGrabbable(false);
+
+  world.add(player2Box);
 }
 
 void refreshCircle() {
-  if (player1.getX() >width || player1.getX() < 0) {
-    player1.setPosition(100, 600);
-    player1.setVelocity(0, 0);
-    player1.setAngularVelocity(0);
+  if (player1Ball.getX() >width || player1Ball.getX() < 0) {
+    player1Ball.setPosition(100, 600);
+    player1Ball.setVelocity(0, 0);
+    player1Ball.setAngularVelocity(0);
   }
-  if (player1.getY() <0) {
-    player1.setPosition(100, 600);
-    player1.setVelocity(0, 0);
-    player1.setAngularVelocity(0);
+  if (player1Ball.getY() <0) {
+    player1Ball.setPosition(100, 600);
+    player1Ball.setVelocity(0, 0);
+    player1Ball.setAngularVelocity(0);
   }
 }
 void refreshSand() {
@@ -474,25 +478,25 @@ void refreshSand() {
   }
 }
 void refreshBox() {
-  if (player2.getX() >width+100 || player2.getX() < 0-100) {
-    player2.setPosition(1750, 300);
-    player2.setVelocity(0, 0);
-    player2.setAngularVelocity(0);
-    player2.setRotation(0);
+  if (player2Box.getX() >width+100 || player2Box.getX() < 0-100) {
+    player2Box.setPosition(1750, 300);
+    player2Box.setVelocity(0, 0);
+    player2Box.setAngularVelocity(0);
+    player2Box.setRotation(0);
   }
-  if (player2.getY() <0-100) {
-    player2.setPosition(1750, 300);
-    player2.setVelocity(0, 0);
-    player2.setAngularVelocity(0);
-    player2.setRotation(0);
+  if (player2Box.getY() <0-100) {
+    player2Box.setPosition(1750, 300);
+    player2Box.setVelocity(0, 0);
+    player2Box.setAngularVelocity(0);
+    player2Box.setRotation(0);
   }
 }
 
 void finish() {
-  if (player1.isTouchingBody(platform11)) {
-    player1.setPosition(100, 600);
-    player1.setVelocity(0, 0);
-    player1.setAngularVelocity(0);
+  if (player1Ball.isTouchingBody(platform11)) {
+    player1Ball.setPosition(100, 600);
+    player1Ball.setVelocity(0, 0);
+    player1Ball.setAngularVelocity(0);
     if (bestScore == 0) {
       bestScore = strokes;
     } else if (bestScore != 0 && strokes < bestScore) {
@@ -503,6 +507,6 @@ void finish() {
 }
 
 void mouseReleased() {
-  player1.addForce(25*(mouseX-player1.getX()), 25*(mouseY-player1.getY()));
+  player1Ball.addForce(25*(mouseX-player1Ball.getX()), 25*(mouseY-player1Ball.getY()));
   strokes ++;
 }
