@@ -14,7 +14,8 @@ final int INTRO = 0;
 final int GAME = 1;
 int mode = 0;
 int strokes = 0;
-int bestScore = 0;
+int p1BestScore = 0;
+int p2BestScore = 0;
 
 //assets
 PImage redBird;
@@ -32,10 +33,11 @@ FPoly platform10;
 FPoly platform11;
 FCircle player1Ball;
 FBox player2Box;
-FCircle player1Box;
-FBox player2Ball;
+FBox player1Box;
+FCircle player2Ball;
 FCircle sand;
 boolean wKey, aKey, dKey, spaceKey;
+boolean player1Turn = true;
 
 //fisica
 FWorld world;
@@ -47,14 +49,17 @@ void setup() {
 
   //initialise world
   makeWorld();
-  makeCircle();
-  makeBox();
+  makeCircle1();
+  makeBox2();
+  makeCircle2();
+  makeBox1();
 
   int i =0;
   while (i<400) {
     makeSand();
     i++;
   }
+
   //add terrain to world
   makePlatform1();
   makePlatform2();
@@ -353,53 +358,74 @@ void draw() {
     intro();
   } else {
 
-    refreshCircle();
-    refreshBox();
-    refreshSand();
-    finish();
+
+    refreshCircle1();
+    refreshCircle2();
+    refreshBox1();
+    refreshBox2();
+    finish1();
 
     world.step();  //get box2D to calculate all the forces and new positions
     world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
-    if (player1Ball.isTouchingBody(platform9)) {
-      player1Ball.setPosition(100, 600);
-      player1Ball.setVelocity(0, 0);
-      player1Ball.setAngularVelocity(0);
-    }
-    if (wKey) {
-      player2Box.setVelocity(0, -200);
-    }
-    if (dKey) {
-      player2Box.setVelocity(200, player2Box.getVelocityY());
+    if (player1Turn == true) {
+      if (player1Ball.isTouchingBody(platform9)) {
+        player1Ball.setPosition(100, 600);
+        player1Ball.setVelocity(0, 0);
+        player1Ball.setAngularVelocity(0);
+      }
+      if (wKey) {
+        player2Box.setVelocity(0, -200);
+      }
+      if (dKey) {
+        player2Box.setVelocity(200, player2Box.getVelocityY());
+      }
+      if (aKey) {
+        player2Box.setVelocity(-200, player2Box.getVelocityY());
+      }
 
-      if (player2Box.isTouchingBody(platform1) || player2Box.isTouchingBody(platform2) || player2Box.isTouchingBody(platform3)|| player2Box.isTouchingBody(platform4)|| player2Box.isTouchingBody(platform5)|| player2Box.isTouchingBody(platform6)|| player2Box.isTouchingBody(platform7)|| player2Box.isTouchingBody(platform8)) {
-        player2Box.setAngularVelocity(0);
-        player2Box.setFriction(100);
+      if (wKey && dKey) {
+        player2Box.setVelocity(282.8, -282.8);
+      }
+      if (wKey && aKey) {
+        player2Box.setVelocity(-282.8, -282.8);
       }
     }
-    if (aKey) {
-      player2Box.setVelocity(-200, player2Box.getVelocityY());
+
+    if (player1Turn == false) {
+      if (player2Ball.isTouchingBody(platform9)) {
+        player2Ball.setPosition(100, 600);
+        player2Ball.setVelocity(0, 0);
+        player2Ball.setAngularVelocity(0);
+      }
+      if (wKey) {
+        player1Box.setVelocity(0, -200);
+      }
+      if (dKey) {
+        player1Box.setVelocity(200, player1Box.getVelocityY());
+      }
+      if (aKey) {
+        player1Box.setVelocity(-200, player1Box.getVelocityY());
+      }
+
+      if (wKey && dKey) {
+        player1Box.setVelocity(282.8, -282.8);
+      }
+      if (wKey && aKey) {
+        player1Box.setVelocity(-282.8, -282.8);
+      }
     }
-    if (player2Box.isTouchingBody(platform1) || player2Box.isTouchingBody(platform2) || player2Box.isTouchingBody(platform3)|| player2Box.isTouchingBody(platform4)|| player2Box.isTouchingBody(platform5)|| player2Box.isTouchingBody(platform6)|| player2Box.isTouchingBody(platform7)|| player2Box.isTouchingBody(platform8)) {
-      player2Box.setAngularVelocity(0);
-      player2Box.setFriction(100);
-    }
-    if (wKey && dKey) {
-      player2Box.setVelocity(282.8, -282.8);
-    }
-    if (wKey && aKey) {
-      player2Box.setVelocity(-282.8, -282.8);
-    }
-    textSize(50);
-      textAlign(LEFT);
+    textSize(40);
+    textAlign(LEFT);
     text("Strokes: " + strokes, 10, 50);
-    text("Least strokes: " + bestScore, 10, 110);
+    text("Player 1 least strokes: " + p1BestScore, 10, 110);
+    text("Player 2 least strokes: " + p2BestScore, 10, 170);
   }
 }
 
 
 //===========================================================================================
 
-void makeCircle() {
+void makeCircle1() {
   player1Ball = new FCircle(25);
   player1Ball.setPosition(100, 600);
 
@@ -413,10 +439,39 @@ void makeCircle() {
   player1Ball.setFriction(0);
   player1Ball.setRestitution(0.67);
   player1Ball.setGrabbable(false);
+  if (player1Turn == true) {
+    player1Ball.setStatic(false);
+  } else  if (player1Turn == false) {
+    player1Ball.setStatic(true);
+  }
 
 
   //add to world
   world.add(player1Ball);
+}
+//===========================================================================================
+void makeCircle2() {
+  player2Ball = new FCircle(25);
+  player2Ball.setPosition(2100, 600);
+
+  //set visuals
+  player2Ball.setStroke(0);
+  player2Ball.setStrokeWeight(1);
+  player2Ball.setFillColor(red);
+
+  //set physical properties
+  player2Ball.setDensity(0.2);
+  player2Ball.setFriction(0);
+  player2Ball.setRestitution(0.67);
+  player2Ball.setGrabbable(false);
+  if (player1Turn == false) {
+    player2Ball.setStatic(false);
+  } else if (player1Turn == true) {
+    player2Ball.setStatic(true);
+  }
+
+  //add to world
+  world.add(player2Ball);
 }
 //===========================================================================================
 void makeSand() {
@@ -439,8 +494,29 @@ void makeSand() {
   world.add(sand);
 }
 //===========================================================================================
+void makeBox1() {
+  player1Box = new FBox(25, 25);
+  player1Box.setPosition(2550, 500);
 
-void makeBox() {
+  //set visuals
+  player1Box.setStroke(0);
+  player1Box.setStrokeWeight(1);
+  player1Box.setFillColor(dBlue);
+
+  //set physical properties
+  player1Box.setDensity(1);
+  player1Box.setFriction(100);
+  player1Box.setRestitution(0.41);
+  player1Box.setGrabbable(false);
+  if (player1Turn == true) {
+    player1Box.setStatic(true);
+  } else if (player1Turn == false) {
+    player1Box.setStatic(false);
+  }
+
+  world.add(player1Box);
+}
+void makeBox2() {
   player2Box = new FBox(25, 25);
   player2Box.setPosition(1750, 500);
 
@@ -454,59 +530,97 @@ void makeBox() {
   player2Box.setFriction(100);
   player2Box.setRestitution(0.41);
   player2Box.setGrabbable(false);
+  if (player1Turn == true) {
+    player2Box.setStatic(false);
+  } else if (player1Turn == false) {
+    player2Box.setStatic(true);
+  }
 
   world.add(player2Box);
 }
 
-void refreshCircle() {
-  if (player1Ball.getX() >width || player1Ball.getX() < 0) {
-    player1Ball.setPosition(100, 600);
-    player1Ball.setVelocity(0, 0);
-    player1Ball.setAngularVelocity(0);
-  }
-  if (player1Ball.getY() <0) {
-    player1Ball.setPosition(100, 600);
-    player1Ball.setVelocity(0, 0);
-    player1Ball.setAngularVelocity(0);
-  }
-}
-void refreshSand() {
-  if (sand.getY() >300) {
-    sand.setPosition(random(910, 1190), 250);
-    sand.setVelocity(0, 0);
-    sand.setAngularVelocity(0);
+void refreshCircle1() {
+  if (player1Turn == true) {
+    if (player1Ball.getX() >width || player1Ball.getX() < 0) {
+      player1Ball.setPosition(100, 600);
+      player1Ball.setVelocity(0, 0);
+      player1Ball.setAngularVelocity(0);
+    }
+    if (player1Ball.getY() <0) {
+      player1Ball.setPosition(100, 600);
+      player1Ball.setVelocity(0, 0);
+      player1Ball.setAngularVelocity(0);
+    }
   }
 }
-void refreshBox() {
-  if (player2Box.getX() >width+100 || player2Box.getX() < 0-100) {
-    player2Box.setPosition(1750, 300);
-    player2Box.setVelocity(0, 0);
-    player2Box.setAngularVelocity(0);
-    player2Box.setRotation(0);
-  }
-  if (player2Box.getY() <0-100) {
-    player2Box.setPosition(1750, 300);
-    player2Box.setVelocity(0, 0);
-    player2Box.setAngularVelocity(0);
-    player2Box.setRotation(0);
+void refreshCircle2() {
+  if (player1Turn == false) {
+    if (player2Ball.getX() >width || player2Ball.getX() < 0) {
+      player2Ball.setPosition(100, 600);
+      player2Ball.setVelocity(0, 0);
+      player2Ball.setAngularVelocity(0);
+    }
+    if (player2Ball.getY() <0) {
+      player2Ball.setPosition(100, 600);
+      player2Ball.setVelocity(0, 0);
+      player2Ball.setAngularVelocity(0);
+    }
   }
 }
 
-void finish() {
+void refreshBox1() {
+  if (player1Turn == false) {
+    if (player1Box.getX() >width+100 || player1Box.getX() < 0-100) {
+      player1Box.setPosition(1550, 500);
+      player1Box.setVelocity(0, 0);
+      player1Box.setAngularVelocity(0);
+      player1Box.setRotation(0);
+    }
+    if (player1Box.getY() <0-100) {
+      player1Box.setPosition(1750, 500);
+      player1Box.setVelocity(0, 0);
+      player1Box.setAngularVelocity(0);
+      player1Box.setRotation(0);
+    }
+  }
+}
+void refreshBox2() {
+  if (player1Turn == true) {
+    if (player2Box.getX() >width+100 || player2Box.getX() < 0-100) {
+      player2Box.setPosition(1750, 500);
+      player2Box.setVelocity(0, 0);
+      player2Box.setAngularVelocity(0);
+      player2Box.setRotation(0);
+    }
+    if (player2Box.getY() <0-100) {
+      player2Box.setPosition(1750, 500);
+      player2Box.setVelocity(0, 0);
+      player2Box.setAngularVelocity(0);
+      player2Box.setRotation(0);
+    }
+  }
+}
+
+void finish1() {
+
   if (player1Ball.isTouchingBody(platform11)) {
-    player1Ball.setPosition(100, 600);
+    player1Ball.setPosition(2100, 600);
     player1Ball.setVelocity(0, 0);
     player1Ball.setAngularVelocity(0);
-    if (bestScore == 0) {
-      bestScore = strokes;
-    } else if (bestScore != 0 && strokes < bestScore) {
-      bestScore = strokes;
+    if (p1BestScore == 0) {
+      p1BestScore = strokes;
+    } else if (p1BestScore != 0 && strokes < p1BestScore) {
+      p1BestScore = strokes;
     }
+
+
+
     strokes = 0;
   }
 }
 
 void mouseReleased() {
   player1Ball.addForce(25*(mouseX-player1Ball.getX()), 25*(mouseY-player1Ball.getY()));
+  player2Ball.addForce(25*(mouseX-player2Ball.getX()), 25*(mouseY-player2Ball.getY()));
   strokes ++;
 }
