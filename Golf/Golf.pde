@@ -15,8 +15,8 @@ final int GAME = 1;
 final int ENDSCREEN = 2;
 int mode = 0;
 int strokes = 0;
-int p1BestScore = 0;
-int p2BestScore = 0;
+int p1Total = 0;
+int p2Total = 0;
 int startTimer = 0;
 
 //assets
@@ -426,8 +426,8 @@ void draw() {
     textSize(40);
     textAlign(LEFT);
     text("Strokes: " + strokes, 10, 50);
-    text("Player 1 least strokes: " + p1BestScore, 10, 110);
-    text("Player 2 least strokes: " + p2BestScore, 10, 170);
+    text("Player 1 total strokes: " + p1Total, 10, 110);
+    text("Player 2 total strokes: " + p2Total, 10, 170);
   }
 }
 
@@ -621,11 +621,9 @@ void finish1() {
     player2Box.setPosition(3000, 100);
     player1Ball.setVelocity(0, 0);
     player1Ball.setAngularVelocity(0);
-    if (p1BestScore == 0) {
-      p1BestScore = strokes;
-    } else if (p1BestScore != 0 && strokes < p1BestScore) {
-      p1BestScore = strokes;
-    }
+
+    p1Total = p1Total + strokes;
+
     player1Turn = false;
     startTimer = 0;
 
@@ -639,11 +637,7 @@ void finish2() {
     player1Box.setPosition(3000, 100);
     player2Ball.setVelocity(0, 0);
     player2Ball.setAngularVelocity(0);
-    if (p2BestScore == 0) {
-      p2BestScore = strokes;
-    } else if (p2BestScore != 0 && strokes < p2BestScore) {
-      p2BestScore = strokes;
-    }
+    p2Total = p2Total + strokes;
     player1Turn = true;
     startTimer = 0;
 

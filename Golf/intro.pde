@@ -11,6 +11,6 @@ void intro() {
   }
   playCount = 0;
   strokes = 0;
-  p1BestScore = 0;
-  p2BestScore = 0;
+  p1Total = 0;
+  p2Total = 0;
 }
