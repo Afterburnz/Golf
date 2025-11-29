@@ -1,5 +1,5 @@
 void endscreen() {
-  background(black);
+  background(blue);
   textAlign(CENTER);
   textSize(125);
   text("End", 962, 250);

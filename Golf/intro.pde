@@ -1,5 +1,5 @@
 void intro() {
-  background(black);
+  background(green);
   textAlign(CENTER);
   textSize(125);
   text("Cooked Golf", 962, 450);
